@@ -1,6 +1,8 @@
 const userModel = require("../models/userModel");
 const { setUser } = require("../service/auth");
 const { v4: uuidv4 } = require("uuid");
+const bycrypt = require("bcryptjs");
+const productModel = require("../models/productModel");
 
 const getUser = async (req, res) => {
   const user = await userModel.find();
@@ -30,24 +32,53 @@ const deleteUser = async (req, res) => {
 };
 
 const handleUserSignUp = async (req, res) => {
-  const { name, email, password, userType } = req.body;
-  await userModel.create({
-    name,
-    email,
-    password,
-    userType,
-  });
-  return res.status(201).json("User Created Successfully");
+  try {
+    const existingUser = await userModel.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res
+        .status(200)
+        .send({ message: "user already exists", success: false });
+    }
+    const password = req.body.password;
+    const salt = await bycrypt.genSalt(10);
+    const hashedPassword = await bycrypt.hash(password, salt);
+    req.body.password = hashedPassword;
+    const newUser = new userModel(req.body);
+    await newUser.save();
+    res
+      .status(201)
+      .send({ message: "Registeration Successful", success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: `Register Controller ${error.message}`,
+    });
+  }
 };
 
 const handleUserLogin = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await userModel.findOne({ email, password });
-  if (!user) return res.status(400).json("Invalid User or Pass");
-  const sessionId = uuidv4();
-  setUser(sessionId, user);
-  res.cookie("uid", sessionId);
-  return res.status(201).json("Logged In");
+  try {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (!user) {
+      return res
+        .status(200)
+        .send({ message: "user not found", success: false });
+    }
+    const isMatch = await bycrypt.compare(req.body.password, user.password);
+    if (!isMatch) {
+      return res
+        .status(200)
+        .send({ message: "Invalid Email or Password", success: false });
+    }
+    const sessionId = uuidv4();
+    setUser(sessionId, user);
+    res.cookie("uid", sessionId);
+    res.status(200).send({ message: "Login Success", success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: `Error in Login CTRL ${error.message}` });
+  }
 };
 
 module.exports = {

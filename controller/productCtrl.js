@@ -1,8 +1,7 @@
 const productModel = require("../models/productModel");
 
 const getProduct = async (req, res) => {
-  if (!req.user) return res.status(400).send("Masla in prod get ");
-  const product = await productModel.find({ createdBy: req.user._id });
+  const product = await productModel.find({});
   return res.send(product);
 };
 const saveProduct = async (req, res) => {

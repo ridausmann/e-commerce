@@ -1,19 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const { restrictToLoggedUserOnly, checkAuth } = require("./middlewares/auth");
 
 const userRouter = require("./routes/user");
 const productRouter = require("./routes/product");
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 app.use("/user", userRouter);
-app.use("/product", restrictToLoggedUserOnly, checkAuth, productRouter);
+app.use("/product", productRouter);
 
 app.listen(port, () => {
   console.log(`listening on ${port}`);

@@ -6,6 +6,7 @@ const {
   deleteUser,
   handleUserSignUp,
   handleUserLogin,
+  getAllProductsController,
 } = require("../controller/userCtrl");
 const router = express.Router();
 

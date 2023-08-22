@@ -17,10 +17,10 @@ const productSchema = mongoose.Schema({
     type: String,
     required: [true, "quantity is required"],
   },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
-  },
+  // createdBy: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "users",
+  // },
 });
 
 const productModel = mongoose.model("products", productSchema);
