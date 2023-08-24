@@ -1,7 +1,7 @@
 const productModel = require("../models/productModel");
 
 const getProduct = async (req, res) => {
-  const product = await productModel.find({});
+  const product = await productModel.find();
   return res.send(product);
 };
 const saveProduct = async (req, res) => {
@@ -10,7 +10,8 @@ const saveProduct = async (req, res) => {
   product.price = req.body.price;
   product.category = req.body.category;
   product.quantity = req.body.quantity;
-  product.createdBy = req.user._id;
+  product.userId = req.body.userId;
+  // product.createdBy = req.user._id;
   await product.save();
   return res.send(product);
 };

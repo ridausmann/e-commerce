@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const { restrictToLoggedUserOnly, checkAuth } = require("./middlewares/auth");
 
 const userRouter = require("./routes/user");
 const productRouter = require("./routes/product");

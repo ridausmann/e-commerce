@@ -12,7 +12,8 @@ const Login = () => {
       const res = await axios.post("http://localhost:8080/user/login", values);
       if (res.data.success) {
         message.success("Login Successful");
-        console.log(values);
+        console.log("Response from server: ", res.data.user._id);
+        localStorage.setItem("id", JSON.stringify(res.data.user._id));
         navigate("/");
       } else {
         message.error(res.data.message);

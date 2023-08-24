@@ -71,10 +71,12 @@ const handleUserLogin = async (req, res) => {
         .status(200)
         .send({ message: "Invalid Email or Password", success: false });
     }
-    const sessionId = uuidv4();
-    setUser(sessionId, user);
-    res.cookie("uid", sessionId);
-    res.status(200).send({ message: "Login Success", success: true });
+    // const sessionId = uuidv4();
+    // setUser(sessionId, user);
+    // res.cookie("uid", sessionId);
+    res
+      .status(200)
+      .send({ message: "Login Success", success: true, user: user });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: `Error in Login CTRL ${error.message}` });
